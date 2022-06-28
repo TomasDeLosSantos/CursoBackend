@@ -1,0 +1,20 @@
+[
+  {
+    "id": 1,
+    "title": "The Way of Kings",
+    "price": 1500,
+    "thumbnail": "https://images.cdn3.buscalibre.com/fit-in/360x360/d6/bb/d6bbbdb2b931fd59f095cf37435ed6e3.jpg"
+  },
+  {
+    "id": 2,
+    "title": "Foundation",
+    "price": 800,
+    "thumbnail": "https://images.cdn2.buscalibre.com/fit-in/360x360/e3/77/e37775bdc1602f5952818c6c52cc6c8a.jpg"
+  },
+  {
+    "id": 3,
+    "title": "Dune",
+    "price": 950,
+    "thumbnail": "https://images.cdn1.buscalibre.com/fit-in/360x360/bb/1f/bb1f2daa9d7fdb7bc9caf1006b329ca5.jpg"
+  }
+]
