@@ -18,3 +18,59 @@
     "thumbnail": "https://images.cdn1.buscalibre.com/fit-in/360x360/bb/1f/bb1f2daa9d7fdb7bc9caf1006b329ca5.jpg"
   }
 ]
+
+
+
+// app.get('/', (req, res) => {
+//     res.redirect('/api');
+// })
+
+router.get('/', (req, res) => {
+    console.log(req.status);
+    res.render('./pages/index', {message: '', products: products});
+})
+
+router.get('/productos', (req, res) => {
+    res.render('./pages/products', {products: products});
+})
+
+router.get('/productos/:id', (req, res) => {
+    let book = products.find(p => p.id == req.params.id);
+    book ? res.json(book) : res.json({ error: "Not Found"});
+})
+
+router.post('/productos', (req, res) => {
+    let { title, price, img } = req.body;
+    let newBook = {title: title, price: price, img: img, id: products.length+1};
+    products.push(newBook);
+    // res.render('./pages/alert', {message: 'Product added successfully!'});
+    res.redirect(301, '/api/productos');
+})
+
+router.put('/productos/:id', (req, res) => {
+    let { title, price, url } = req.body;
+    let book = products.find(p => p.id == req.params.id);
+
+    if(book){
+        book.title = title;
+        book.price = price;
+        book.url = url;
+    
+        products[products.findIndex(p => p.id == req.params.id)] = book;
+        
+        res.render('./pages/alert', {message: 'Product updated successfully!'});
+    } else{
+        res.render('./pages/alert', {message: 'Error: product not found'});
+    }
+})
+
+router.delete('/productos/:id', (req, res) => {
+    let book = products.find(p => p.id == req.params.id);
+
+    if(book){
+        products = products.filter(p => p.id != req.params.id);
+        res.send({ deleted: book });
+    } else{
+        res.send({ error: "Not Found" });
+    }
+})

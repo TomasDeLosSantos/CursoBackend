@@ -4,20 +4,19 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.7.7/handlebars.min.js" integrity="sha512-RNLkV3d+aLtfcpEyFG8jRbnWHxUqVZozacROI4J2F1sTaDqo1dPQYs01OMi1t1w9Y2FdbSCDSQ2ZVdAC8bzgAg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="/socket.io/socket.io.js"></script>
     <link rel="stylesheet" href="/css/style.css">
     <title>API REST</title>
 </head>
 <body>
-    <section class="product__nav">
-        <a class="link product__link" href="/">Home</a>
-        <!-- <h2 class="product__title">Products</h2> -->
-    </section>
+
     <section class="cont">
         <!-- <h2 class="title">
-            <a class="link" href="/api/productos">See all products</a>
-        </h2>
+            <a class="link" href="/api/productos">Go to chat</a>
+        </h2> -->
     
-        <form class="form" action="/api/productos" method="post">
+        <form class="form" id="product__form">
             <h2  class="form__title">Add product:</h2>
             
             <label class="form__label" for="title">Title</label>
@@ -31,12 +30,15 @@
     
             <input class="form__btn" type="submit" value="Save">
     
-        </form> -->
+        </form>
 
-        <% if(message) { %>
-            <h3 class="alert"> <%= message %> </h3>
-        <% } %>
+
+        <section class="product__cont" id="product__cont">
+            
+        </section>
+        
     </section>
     
+    <script src="./js/main.js"></script>
 </body>
 </html>

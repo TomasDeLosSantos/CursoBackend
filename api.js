@@ -1,9 +1,19 @@
 // const fs = require('fs');
+const { log } = require('console');
 const express = require('express');
 const { Router } = express;
+const { Server: HttpServer} = require('http');
+const { Server: Socket} = require('socket.io');
+const files = require('./modules/files.js');
+
 const app = express();
 const router = Router();
-const PORT = 8080;
+const PORT = 8000;
+const httpServer = new HttpServer(app);
+const io = new Socket(httpServer);
+
+const messagesDB = new files('messages.txt');
+
 
 app.use(express.json());
 app.use(express.static('public'));
@@ -35,59 +45,36 @@ let products = [
 ]
 
 
-app.get('/', (req, res) => {
-    res.redirect('/api');
+// WEBSOCKETS
+
+io.on('connection', async socket => {
+    console.log('New client connected');
+
+    // PRODUCTS
+    socket.emit('products', products);
+
+    socket.on('update', product => {
+        products.push(product);
+        io.sockets.emit('products', products);
+    })
+
+    // MESSAGES
+    // // carga inicial de mensajes
+    // socket.emit('mensajes', await mensajesApi.listarAll());
+
+    // // actualizacion de mensajes
+    // socket.on('nuevoMensaje', async mensaje => {
+    //     mensaje.fyh = new Date().toLocaleString()
+    //     await mensajesApi.guardar(mensaje)
+    //     io.sockets.emit('mensajes', await mensajesApi.listarAll());
+    // })
 })
 
-router.get('/', (req, res) => {
-    res.render('./pages/index', {message: ''});
-})
 
-router.get('/productos', (req, res) => {
-    res.render('./pages/products', {products: products});
-})
 
-router.get('/productos/:id', (req, res) => {
-    let book = products.find(p => p.id == req.params.id);
-    book ? res.json(book) : res.json({ error: "Not Found"});
-})
 
-router.post('/productos', (req, res) => {
-    let { title, price, img } = req.body;
-    let newBook = {title: title, price: price, img: img, id: products.length+1};
-    products.push(newBook);
-    res.render('./pages/alert', {message: 'Product added successfully!'});
-})
 
-router.put('/productos/:id', (req, res) => {
-    let { title, price, url } = req.body;
-    let book = products.find(p => p.id == req.params.id);
-
-    if(book){
-        book.title = title;
-        book.price = price;
-        book.url = url;
-    
-        products[products.findIndex(p => p.id == req.params.id)] = book;
-        
-        res.render('./pages/alert', {message: 'Product updated successfully!'});
-    } else{
-        res.render('./pages/alert', {message: 'Error: product not found'});
-    }
-})
-
-router.delete('/productos/:id', (req, res) => {
-    let book = products.find(p => p.id == req.params.id);
-
-    if(book){
-        products = products.filter(p => p.id != req.params.id);
-        res.send({ deleted: book });
-    } else{
-        res.send({ error: "Not Found" });
-    }
-})
-
-const server = app.listen(PORT, () => {
+const server = httpServer.listen(PORT, () => {
     console.log(`Corriendo servidor en dirección ${PORT}`);
 })
 
