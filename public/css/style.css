@@ -113,7 +113,6 @@ p, h1, h2, h3, h4, h5, h6 {
     width: 1700px;
     margin: auto;
     flex-wrap: wrap;
-    
 }
 
 .card__cont{
@@ -164,4 +163,47 @@ p, h1, h2, h3, h4, h5, h6 {
 .alert{
     color: #50B2C0;
     font-size: 2rem;
+}
+
+.chat__cont{
+    /* min-height: 50vh; */
+    background-color: #363034;
+    width: 60%;
+    margin: 5rem auto;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    align-items: flex-start;
+}
+
+.chat__title{
+    color: #FF4000;
+    font-size: 1.5rem;
+}
+
+.msg__cont{
+    color: #50B2C0;
+}
+
+.msg__date{
+    color: #FF4000;
+    padding: 0rem 0.5rem;
+}
+
+.msg__text{
+    color: #FEEFDD;
+}
+
+.chat{
+    margin-top: 0;
+    width: 100%;
+}
+
+#chat__cont{
+    margin: 1rem 0rem;
+}
+
+#chat__cont > * {
+    padding: 0.1rem 0rem;
 }

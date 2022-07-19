@@ -1,5 +1,4 @@
 // const fs = require('fs');
-const { log } = require('console');
 const express = require('express');
 const { Router } = express;
 const { Server: HttpServer} = require('http');
@@ -46,7 +45,6 @@ let products = [
 
 
 // WEBSOCKETS
-
 io.on('connection', async socket => {
     console.log('New client connected');
 
@@ -58,16 +56,14 @@ io.on('connection', async socket => {
         io.sockets.emit('products', products);
     })
 
-    // MESSAGES
-    // // carga inicial de mensajes
-    // socket.emit('mensajes', await mensajesApi.listarAll());
+    //MESSAGES
+    socket.emit('messages', await messagesDB.getAll());
 
-    // // actualizacion de mensajes
-    // socket.on('nuevoMensaje', async mensaje => {
-    //     mensaje.fyh = new Date().toLocaleString()
-    //     await mensajesApi.guardar(mensaje)
-    //     io.sockets.emit('mensajes', await mensajesApi.listarAll());
-    // })
+    socket.on('newMessage', async msg => {
+        msg.date = new Date().toLocaleString()
+        await messagesDB.save(msg)
+        io.sockets.emit('messages', await messagesDB.getAll());
+    })
 })
 
 

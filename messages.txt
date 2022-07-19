@@ -1,0 +1,38 @@
+[
+  {
+    "author": "a@a.com",
+    "msg": "hola",
+    "date": "19/7/2022 12:46:19",
+    "id": 1
+  },
+  {
+    "author": "b@b.com",
+    "msg": "Buenas!!",
+    "date": "19/7/2022 12:46:31",
+    "id": 2
+  },
+  {
+    "author": "a@a.com",
+    "msg": "",
+    "date": "19/7/2022 12:46:53",
+    "id": 3
+  },
+  {
+    "author": "theegameer12@gmail.com",
+    "msg": "Vida antes que muerte, Radiantes!",
+    "date": "19/7/2022 12:57:52",
+    "id": 4
+  },
+  {
+    "author": "a@a.com",
+    "msg": "hola",
+    "date": "19/7/2022 12:59:15",
+    "id": 5
+  },
+  {
+    "author": "a@a.com",
+    "msg": "a",
+    "date": "19/7/2022 13:00:58",
+    "id": 6
+  }
+]

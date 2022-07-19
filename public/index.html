@@ -12,9 +12,6 @@
 <body>
 
     <section class="cont">
-        <!-- <h2 class="title">
-            <a class="link" href="/api/productos">Go to chat</a>
-        </h2> -->
     
         <form class="form" id="product__form">
             <h2  class="form__title">Add product:</h2>
@@ -35,6 +32,24 @@
 
         <section class="product__cont" id="product__cont">
             
+        </section>
+
+        <section class="chat__cont">
+            <h2 class="chat__title">Chat</h2>
+            <form class="form chat" id="chat__form">
+                <label class="form__label" for="email">Email</label>
+                <input class="form__input" required type="email" name="email" placeholder="Email" id="">
+
+                <div id="chat__cont">
+                    
+                </div>
+
+                <label class="form__label" for="msg">Message</label>
+                <input class="form__input" required type="text" name="msg" placeholder="Message" id="">
+
+                <input class="form__btn" type="submit" value="Send">
+
+            </form>
         </section>
         
     </section>
