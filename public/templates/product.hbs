@@ -1,0 +1,15 @@
+{{#if products.length}}
+    <h2 class="product__title">Products</h2>
+
+    {{#each products}}
+        <div class="card__cont">
+            <img class="card__img" src={{this.img}} alt="">
+            <h2 class="card__title"> {{this.title}} </h2>
+            <h3 class="card__price"> ${{this.price}} </h3>
+        </div>
+    {{/each}}
+{{/if}}
+
+{{#unless products.length}}
+    <h2 class="empty__title"> No se encontraron productos </h2>
+{{/unless}}

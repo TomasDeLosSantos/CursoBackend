@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.7.7/handlebars.min.js" integrity="sha512-RNLkV3d+aLtfcpEyFG8jRbnWHxUqVZozacROI4J2F1sTaDqo1dPQYs01OMi1t1w9Y2FdbSCDSQ2ZVdAC8bzgAg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <link rel="stylesheet" href="/css/style.css">
+    <title>API REST</title>
+</head>
+<body>
+
+    <section class="cont">
+    
+        <form class="form" id="product__form">
+            <h2  class="form__title">Add product:</h2>
+            
+            <label class="form__label" for="title">Title</label>
+            <input class="form__input" type="text" name="title" placeholder="Title" id="">
+    
+            <label class="form__label" for="price">Price</label>
+            <input class="form__input" type="number" name="price" placeholder="Price" id="">
+    
+            <label class="form__label" for="img">Image URL</label>
+            <input class="form__input" type="text" name="img" placeholder="Image URL" id="">
+    
+            <input class="form__btn" type="submit" value="Save">
+    
+        </form>
+
+
+        <section class="product__cont" id="product__cont">
+            
+        </section>
+
+        <section class="chat__cont">
+            <h2 class="chat__title">Chat</h2>
+            <form class="form chat" id="chat__form">
+                <label class="form__label" for="email">Email</label>
+                <input class="form__input" required type="email" name="email" placeholder="Email" id="">
+
+                <div id="chat__cont">
+                    
+                </div>
+
+                <label class="form__label" for="msg">Message</label>
+                <input class="form__input" required type="text" name="msg" placeholder="Message" id="">
+
+                <input class="form__btn" type="submit" value="Send">
+
+            </form>
+        </section>
+        
+    </section>
+    
+    <script src="./js/main.js"></script>
+</body>
+</html>
