@@ -5,6 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.7.7/handlebars.min.js" integrity="sha512-RNLkV3d+aLtfcpEyFG8jRbnWHxUqVZozacROI4J2F1sTaDqo1dPQYs01OMi1t1w9Y2FdbSCDSQ2ZVdAC8bzgAg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdn.jsdelivr.net/npm/normalizr@3.6.2/dist/normalizr.browser.min.js"></script>
     <script src="/socket.io/socket.io.js"></script>
     <link rel="stylesheet" href="/css/style.css">
     <title>API REST</title>
@@ -39,6 +40,21 @@
             <form class="form chat" id="chat__form">
                 <label class="form__label" for="email">Email</label>
                 <input class="form__input" required type="email" name="email" placeholder="Email" id="">
+                
+                <label class="form__label" for="name">Name</label>
+                <input class="form__input" required type="text" name="name" placeholder="Name" id="">
+
+                <label class="form__label" for="lastname">Lastname</label>
+                <input class="form__input" required type="text" name="lastname" placeholder="lastname" id="">
+
+                <label class="form__label" for="age">Age</label>
+                <input class="form__input" required type="number" name="age" placeholder="Age" id="">
+                
+                <label class="form__label" for="nick">Nick</label>
+                <input class="form__input" required type="text" name="nick" placeholder="Nick" id="">
+                
+                <label class="form__label" for="avatar">Avatar</label>
+                <input class="form__input" required type="text" name="avatar" placeholder="Avatar" id="">
 
                 <div id="chat__cont">
                     

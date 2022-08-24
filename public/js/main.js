@@ -28,28 +28,57 @@ const showProducts = async (products) => {
     }
 }
 
-socket.on('products', products => {
-    showProducts(products)
-        .then(html => {
-            document.getElementById("product__cont").innerHTML = html;
-        })
-})
+// MUESTRO PRODUCTOS DESDE PROCTS-TEST EN LUGAR DE LOS RECIBIDOS A TRAVÉS DE WEB SOCKETS
+// socket.on('products', products => {
+//     showProducts(products)
+//         .then(html => {
+//             document.getElementById("product__cont").innerHTML = html;
+//         })
+// })
+
+fetch('/api/products-test')
+    .then(response => response.json())
+    .then(data => {
+        showProducts(data)
+            .then(html => {
+                document.getElementById("product__cont").innerHTML = html;
+            })
+    })
+    .catch(err => console.error(err))
 
 chatForm.addEventListener('submit', e => {
     e.preventDefault();
 
     const newMessage = { 
-        author: chatForm[0].value, 
-        msg: chatForm[1].value 
+        author: { 
+            id: chatForm[0].value,
+            name: chatForm[1].value,
+            lastname: chatForm[2].value,
+            age: chatForm[3].value,
+            nick: chatForm[4].value,
+            avatar: chatForm[5].value
+        }, 
+        text: chatForm[6].value 
     };
 
     socket.emit('newMessage', newMessage);
     chatForm.reset();
 })
 
-socket.on('messages', messages => {
-    if(messages){
-        showMessages(messages);
+
+const author = new normalizr.schema.Entity('author', {});
+const message = new normalizr.schema.Entity('message', {
+    author: author
+})
+const messages = new normalizr.schema.Entity('messages', {
+    author: author,
+    messages: [message]
+})
+
+socket.on('messages', msgs => {
+    if(msgs){
+        let denormalizedData = normalizr.denormalize(msgs[0].result, messages, msgs[0].entities);
+        showMessages(denormalizedData.messages);
     }
 })
 
@@ -58,16 +87,16 @@ const showMessages = messages => {
     for(let m of messages){
         let msgCont = document.createElement("h3");
         msgCont.classList.add("msg__cont");
-        msgCont.textContent = m.author;
+        msgCont.textContent = m.author.id;
 
         let msgDate = document.createElement("span");
         msgDate.classList.add("msg__date");
-        msgDate.textContent = '[' + m.date + ']: ';
+        msgDate.textContent = '[' + m.author.name + ' ' + m.author.lastname + ']: ';
         msgCont.appendChild(msgDate);
 
         let msgText = document.createElement("i");
         msgText.classList.add("msg__text");
-        msgText.textContent = m.msg;
+        msgText.textContent = m.text;
         msgCont.appendChild(msgText);
 
         chatCont.appendChild(msgCont);

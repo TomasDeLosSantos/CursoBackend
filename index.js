@@ -2,6 +2,13 @@ const express = require('express');
 const { Router } = express;
 const { Server: HttpServer} = require('http');
 const { Server: Socket} = require('socket.io');
+const { faker } = require('@faker-js/faker')
+const { vehicle, image, mersenne } = faker;
+faker.locale = 'es';
+const normalizr = require('normalizr');
+const { normalize, denormalize, schema} = normalizr;
+const Mongo = require('./modules/MongoDB');
+const mongo = new Mongo();
 
 const app = express();
 const router = Router();
@@ -19,16 +26,49 @@ const sqlite = new dbManager({
     useNullAsDefault: true
 }, 'message');
 
-const mariaDB = new dbManager({
-    client: 'mysql',
-    connection: {
-        host: '127.0.0.1',
-        port: '3306',
-        user: 'root',
-        password: '',
-        database: 'products'
+// GENERADOR DE PRODUCTOS CON FAKER.JS
+const mockProducts = () => {
+    let array = [];
+
+    for(let i = 0; i < 5; i++){
+        array.push({
+            title: vehicle.vehicle(),
+            price: mersenne.rand(),
+            img: image.abstract()
+        })
     }
-}, 'product');
+
+    return array;
+}
+
+// NOMALIZACIÓN DE DATOS
+const normalizeData = async (msg) => {
+    
+    const author = new schema.Entity('author', {});
+    const message = new schema.Entity('message', {
+        author: author
+    })
+    const messages = new schema.Entity('messages', {
+        author: author,
+        messages: [message]
+    })
+
+    let mongoMsg = await mongo.getAll();
+    let denormalizedData;
+    let normalizedData;
+    if(mongoMsg[0].result == 0){
+        denormalizedData = denormalize(mongoMsg[0].result, messages, mongoMsg[0].entities);
+        msg.id = denormalizedData.messages.length;
+        denormalizedData.messages.push(msg);
+        normalizedData = normalize(denormalizedData, messages);
+    } else{
+        normalizedData = normalize({id: 0, messages: [{id: 0, author: msg.author, text: msg.text}]}, messages);
+    }
+    
+
+    await mongo.update(0, normalizedData);
+}
+
 
 app.use(express.json());
 app.use(express.static('public'));
@@ -41,22 +81,17 @@ app.set('view engine', 'ejs');
 io.on('connection', async socket => {
     console.log('New client connected');
 
-    // PRODUCTS
-    socket.emit('products', await mariaDB.getAll());
-
-    socket.on('update', async product => {
-        await mariaDB.save(product)
-        io.sockets.emit('products', await mariaDB.getAll());
-    })
-
     //MESSAGES
-    socket.emit('messages', await sqlite.getAll());
+    socket.emit('messages', await mongo.getAll());
 
     socket.on('newMessage', async msg => {
-        msg.date = new Date().toLocaleString()
-        await sqlite.save(msg)
-        io.sockets.emit('messages', await sqlite.getAll());
+        await normalizeData(msg);
+        io.sockets.emit('messages', await mongo.getAll());
     })
+})
+
+router.get('/products-test', (req, res) => {
+    res.json(mockProducts());
 })
 
 const server = httpServer.listen(PORT, () => {
