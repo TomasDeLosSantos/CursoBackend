@@ -9,7 +9,8 @@ const normalizr = require('normalizr');
 const { normalize, denormalize, schema} = normalizr;
 const Mongo = require('./modules/MongoDB');
 const mongo = new Mongo();
-
+const session = require('express-session');
+const MongoStore = require('connect-mongo');
 const app = express();
 const router = Router();
 const PORT = 8000;
@@ -43,7 +44,6 @@ const mockProducts = () => {
 
 // NOMALIZACIÓN DE DATOS
 const normalizeData = async (msg) => {
-    
     const author = new schema.Entity('author', {});
     const message = new schema.Entity('message', {
         author: author
@@ -52,7 +52,6 @@ const normalizeData = async (msg) => {
         author: author,
         messages: [message]
     })
-
     let mongoMsg = await mongo.getAll();
     let denormalizedData;
     let normalizedData;
@@ -64,8 +63,6 @@ const normalizeData = async (msg) => {
     } else{
         normalizedData = normalize({id: 0, messages: [{id: 0, author: msg.author, text: msg.text}]}, messages);
     }
-    
-
     await mongo.update(0, normalizedData);
 }
 
@@ -76,6 +73,18 @@ app.use('/static', express.static(__dirname + '/public'));
 app.use(express.urlencoded({ extended: true }));
 app.use('/api', router);
 app.set('view engine', 'ejs');
+
+app.use(session({
+    // store: MongoStore.create({ mongoUrl: config.mongoLocal.cnxStr }),
+    store: MongoStore.create({ mongoUrl: 'mongodb+srv://tomas:tomasmongo1234@cluster0.zjndnkl.mongodb.net/?retryWrites=true&w=majority' }),
+    secret: 'shhhhhhhhhhhhhhhhhhhhh',
+    resave: false,
+    saveUninitialized: false,
+    rolling: true,
+    cookie: {
+        maxAge: 60000
+    }
+}))
 
 // WEBSOCKETS
 io.on('connection', async socket => {
@@ -93,6 +102,33 @@ io.on('connection', async socket => {
 router.get('/products-test', (req, res) => {
     res.json(mockProducts());
 })
+
+/* DESAFÍO COOKIES Y SESSION */
+app.get('/logged', (req, res) => {
+    if(req.session.username) res.json({login: 1, username: req.session.username});
+    else res.json({login: 0});
+})
+
+app.post('/login', (req, res) => {
+    // console.log(req.body.username);
+    req.session.username = req.body.username;
+    res.json({login: 1, username: req.body.username});
+})
+
+app.get('/logout', (req, res) => {
+    let user = req.session.username;
+    req.session.destroy(err => {
+        if (err) {
+            res.json({ login: 0 })
+        } else {
+            res.json({login: 0, username: user})
+        }
+    })
+})
+
+
+
+
 
 const server = httpServer.listen(PORT, () => {
     console.log(`Corriendo servidor en dirección ${PORT}`);
