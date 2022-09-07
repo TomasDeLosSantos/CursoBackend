@@ -2,12 +2,45 @@ const socket = io.connect();
 const productForm = document.getElementById("product__form");
 const chatForm = document.getElementById("chat__form");
 const chatCont = document.getElementById("chat__cont");
+let logged = 0;
+
+// BUTTONS
+const loginNav = document.getElementById('login__nav');
+const registerNav = document.getElementById('register__nav');
+const logoutBtn = document.getElementById('logout__btn');
+
+// LOGIN
 const loginForm = document.getElementById('login__form');
 const loginMsg = document.getElementById('login__msg');
 const loginInput = document.getElementById('login__input');
 const loginBtn = document.getElementById('login__btn');
-const logoutBtn = document.getElementById('logout__btn');
-let logged = 0;
+const loginErr = document.getElementById('login__err');
+
+// REGISTER
+const registerForm = document.getElementById('register__form');
+const registerErr = document.getElementById('register__err');
+
+loginNav.addEventListener('click', e => {
+    e.preventDefault();
+    loginErr.style.display = 'none';
+    registerForm.style.display = 'none';
+    if(loginForm.style.display == 'block'){
+        loginForm.style.display = 'none';
+    } else {
+        loginForm.style.display = 'block';
+    }
+    
+})
+registerNav.addEventListener('click', e => {
+    e.preventDefault();
+    registerErr.style.display = 'none';
+    loginForm.style.display = 'none';
+    if(registerForm.style.display == 'block'){
+        registerForm.style.display = 'none';
+    } else {
+        registerForm.style.display = 'block';
+    }
+})
 
 fetch('/logged')
     .then(res => res.json())
@@ -24,27 +57,59 @@ fetch('/logged')
 
 loginForm.addEventListener('submit', e => {
     e.preventDefault();
-    console.log(loginForm[0].value);
-    if(loginForm[0].value){
+    if(loginForm[0].value && loginForm[1].value){
+        console.log(loginForm[0].value);
         fetch('/login', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({username: loginForm[0].value})
+            body: JSON.stringify({username: loginForm[0].value, password: loginForm[1].value})
         })
             .then(res => res.json())
             .then(data => {
                 loginMsg.textContent = `Welcome ${data.username}`;
                 logged = data.login;
-                loginBtn.style.display = 'none';
-                loginInput.style.display = 'none';
+                loginNav.style.display = 'none';
+                registerNav.style.display = 'none';
                 logoutBtn.style.display = 'block';
+                loginForm.style.display = 'none';
+                loginForm.reset();
             })
-            .catch(err => console.error(err))
+            .catch(err => {
+                // console.error(err);
+                loginErr.style.display = 'inline-block'
+                loginErr.textContent = 'Invalid Credentials';
+                loginForm.reset();
+                // loginMsg.textContent = `Invalid Credentials`;
+            })
     }
 
-    loginForm.reset();
+})
+
+registerForm.addEventListener('submit', e => {
+    e.preventDefault();
+
+    if(registerForm[0].value && registerForm[1].value){
+        fetch('/register', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({username: registerForm[0].value, password: registerForm[1].value})
+        })  
+            .then(res => res.json())
+            .then(data => {
+                loginMsg.textContent = 'User Registered Correctly';
+                registerForm.style.display = 'none';
+                registerForm.reset();
+            })
+            .catch(err => {
+                registerErr.style.display = 'inline-block'
+                registerErr.textContent = 'User Already Exists';
+                registerForm.reset();
+            })
+    }
 })
 
 logoutBtn.addEventListener('click', e => {
@@ -54,8 +119,8 @@ logoutBtn.addEventListener('click', e => {
         .then(data => {
             loginMsg.textContent = `Bye ${data.username}`;
             logged = data.login;
-            loginBtn.style.display = 'inline';
-            loginInput.style.display = 'inline';
+            loginNav.style.display = 'inline';
+            registerNav.style.display = 'inline';
             logoutBtn.style.display = 'none';
 
             setTimeout(() => {

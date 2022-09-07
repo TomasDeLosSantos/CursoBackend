@@ -13,17 +13,37 @@
 <body>
 
     <nav class="nav__cont">
-        <h2 class="form__title" id="login__msg">Login</h2>
-
+        <h2 class="form__title" id="login__msg">Welcome</h2>
+        
         <section class="nav__login">
-            <form action="" id="login__form">
-                <!-- <label for="name">Username</label> -->
-                <input class="login__input" id="login__input" name="name" type="text" placeholder="Username">
-                <button class="form__btn" id="login__btn" type="submit">LOGIN</button>
-            </form>
+            <button class="form__btn" id="login__nav" type="">LOGIN</button>
+            <button class="form__btn" id="register__nav" type="">REGISTER</button>
             <button class="form__btn" id="logout__btn" type="">LOGOUT</button>
         </section>
     </nav>
+    
+    <form action="" id="login__form">
+        <!-- <label class="form__label" for="name">LOGIN</label> -->
+        <h2 class="form__subtitle" id="login__msg">Login Form</h2>
+        <input class="login__input" id="login__input" name="name" type="text" placeholder="Username">
+        <input class="login__input" id="login__pass" name="password" type="password" placeholder="Password">
+        <button class="form__btn" id="login__btn" type="submit">SUBMIT</button>
+        <h2 class="form__error" id="login__err"></h2>
+        <!-- <a href="./login.html" class="form__btn">LOGIN</a> -->
+        <!-- <button class="form__btn" id="" type="submit">LOGIN HTML</button>
+            <button class="form__btn" id="" type="submit">REGISTER HTML</button> -->
+    </form>
+    <form action="" id="register__form">
+        <!-- <label for="name">Username</label> -->
+        <h2 class="form__subtitle" id="login__msg">Register Form</h2>
+        <input class="login__input" id="register__input" name="name" type="text" placeholder="Username">
+        <input class="login__input" id="register__pass" name="password" type="password" placeholder="Password">
+        <button class="form__btn" id="register__btn" type="submit">SUBMIT</button>
+        <h2 class="form__error" id="register__err"></h2>
+        <!-- <a href="./login.html" class="form__btn">LOGIN</a> -->
+        <!-- <button class="form__btn" id="" type="submit">LOGIN HTML</button>
+        <button class="form__btn" id="" type="submit">REGISTER HTML</button> -->
+    </form>
 
     <section class="cont">
     

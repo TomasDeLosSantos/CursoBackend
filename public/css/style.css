@@ -66,7 +66,8 @@ p, h1, h2, h3, h4, h5, h6 {
     align-items: center;
 }
 
-.form{
+form{
+    margin: auto;
     margin-top: 2rem;
     display: flex;
     flex-direction: column;
@@ -85,7 +86,7 @@ p, h1, h2, h3, h4, h5, h6 {
 }
 
 .form__btn{
-    margin-top: 1rem;
+    margin: 1rem;
     border: none;
     padding: 0.3rem 0.8rem;
     background-color: #FF4000;
@@ -102,6 +103,10 @@ p, h1, h2, h3, h4, h5, h6 {
 
 .form__title{
     color: #FF4000;
+}
+
+.form__subtitle{
+    color: #50B2C0;
 }
 
 .form__label{
@@ -228,3 +233,12 @@ p, h1, h2, h3, h4, h5, h6 {
 #chat__cont > * {
     padding: 0.1rem 0rem;
 }
+
+#login__form, #login__err, #register__form, #register__err{
+    display: none;
+}
+
+.form__error{
+    color: red;
+}
+
