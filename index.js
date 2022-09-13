@@ -29,6 +29,15 @@ const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const bcrypt = require('bcryptjs');
 const { createHash } = require('crypto');
+const { fork } = require('child_process');
+
+
+if(process.env.NODE_ENV != 'production'){
+    require('dotenv').config();
+}
+
+const yargs = require('yargs')(process.argv.slice(2))
+const args = yargs.default({ name: 'John', lastname: 'Doe' }).argv();
 
 
 const sqlite = new dbManager({
@@ -142,8 +151,8 @@ app.set('view engine', 'ejs');
 
 app.use(session({
     // store: MongoStore.create({ mongoUrl: config.mongoLocal.cnxStr }),
-    store: MongoStore.create({ mongoUrl: 'mongodb+srv://tomas:tomasmongo1234@cluster0.zjndnkl.mongodb.net/?retryWrites=true&w=majority' }),
-    secret: 'shhhhhhhhhhhhhhhhhhhhh',
+    store: MongoStore.create({ mongoUrl: process.env.MONGO_URL }),
+    secret: process.env.SECRET,
     resave: false,
     saveUninitialized: false,
     rolling: true,
@@ -201,9 +210,31 @@ app.get('/logout', (req, res) => {
     })
 })
 
+/* DESAFÍO CLASE 28 */
+app.get('/info', (req, res) => {
+    res.json({
+        ...args,
+        platform: process.platform,
+        version: process.version,
+        memory: process.memoryUsage(),
+        processID: process.pid,
+        folder: process.cwd()
+    })
+})
+
 
 const server = httpServer.listen(PORT, () => {
     console.log(`Corriendo servidor en dirección ${PORT}`);
 })
 
+server.on('request', (req, res) => {
+    let { url } = req;
+    if(url == '/api/randoms'){
+        const generator = fork('random.js');
+        generator.send(req.query.quant || 100000000);
+        generator.on('message', msg => {
+            res.end(msg);
+        })
+    }
+})
 server.on("error", error => console.log(`Error en el servidor ${error}`));

@@ -3,6 +3,7 @@
     "@faker-js/faker": "^7.4.0",
     "bcryptjs": "^2.4.3",
     "connect-mongo": "^4.6.0",
+    "dotenv": "^16.0.2",
     "express": "^4.18.1",
     "express-session": "^1.17.3",
     "handlebars": "^4.7.7",
@@ -14,6 +15,7 @@
     "passport-local": "^1.0.0",
     "passport-session": "^1.0.2",
     "socket.io": "^4.5.1",
-    "sqlite3": "^5.0.10"
+    "sqlite3": "^5.0.10",
+    "yargs": "^17.5.1"
   }
 }
