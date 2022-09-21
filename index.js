@@ -231,7 +231,7 @@ server.on('request', (req, res) => {
     let { url } = req;
     if(url == '/api/randoms'){
         const generator = fork('random.js');
-        generator.send(req.query.quant || 100000000);
+        generator.send(req.query.quant || 1000000);
         generator.on('message', msg => {
             res.end(msg);
         })
