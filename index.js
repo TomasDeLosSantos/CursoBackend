@@ -10,6 +10,25 @@ const { vehicle, image, mersenne } = faker;
 faker.locale = 'es';
 const normalizr = require('normalizr');
 const { normalize, denormalize, schema} = normalizr;
+const compression = require('compression');
+const log4js = require('log4js');
+
+log4js.configure({
+    appenders: {
+        consoleLogger: { type: 'console' },
+        warningLogger: { type: 'file', filename: 'warning.log' },
+        errorLogger: { type: 'file', filename: 'error.log' }
+    }, 
+    categories: {
+        default: { appenders: ['consoleLogger'], level: 'info' },
+        warning: { appenders: ['consoleLogger', 'warningLogger'], level: 'warn' },
+        error: { appenders: ['consoleLogger', 'errorLogger'], level: 'error' }
+    }
+});
+
+const consoleLogger = log4js.getLogger();
+const warningLogger = log4js.getLogger('warning');
+const errorLogger = log4js.getLogger('error');
 
 // MONGO MESSAGES
 const Mongo = require('./modules/MongoDB');
@@ -105,6 +124,7 @@ passport.use('login', new LocalStrategy(
             }
         } else{
             console.log('User not found');
+            warningLogger.warn('User Not Found');
             return done(null, false);
         }
     }
@@ -127,6 +147,7 @@ passport.use('signup', new LocalStrategy({
             try {
                 return done(null, await mongoUsers.save(newUser));
             } catch (error) {
+                errorLogger.error('API ERROR')
                 return done(error);
             }
         }
@@ -147,7 +168,9 @@ app.use(express.static('public'));
 app.use('/static', express.static(__dirname + '/public'));
 app.use(express.urlencoded({ extended: true }));
 app.use('/api', router);
+app.use(compression());
 app.set('view engine', 'ejs');
+
 
 app.use(session({
     // store: MongoStore.create({ mongoUrl: config.mongoLocal.cnxStr }),
