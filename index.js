@@ -33,9 +33,8 @@ const { createHash } = require('crypto');
 const { fork } = require('child_process');
 
 
-if(process.env.NODE_ENV != 'production'){
-    require('dotenv').config();
-}
+require('dotenv').config();
+
 
 // const yargs = require('yargs')(process.argv.slice(2))
 // const args = yargs.default({ name: 'John', lastname: 'Doe' }).argv();
