@@ -55,8 +55,8 @@ if(process.env.NODE_ENV != 'production'){
     require('dotenv').config();
 }
 
-const yargs = require('yargs')(process.argv.slice(2))
-const args = yargs.default({ name: 'John', lastname: 'Doe' }).argv();
+// const yargs = require('yargs')(process.argv.slice(2))
+// const args = yargs.default({ name: 'John', lastname: 'Doe' }).argv();
 
 
 const sqlite = new dbManager({
