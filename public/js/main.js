@@ -42,7 +42,7 @@ registerNav.addEventListener('click', e => {
     }
 })
 
-fetch('/logged')
+fetch('/auth/logged')
     .then(res => res.json())
     .then(data => {
         if(data.username){
@@ -59,7 +59,7 @@ loginForm.addEventListener('submit', e => {
     e.preventDefault();
     if(loginForm[0].value && loginForm[1].value){
         console.log(loginForm[0].value);
-        fetch('/login', {
+        fetch('/auth/login', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -91,7 +91,7 @@ registerForm.addEventListener('submit', e => {
     e.preventDefault();
 
     if(registerForm[0].value && registerForm[1].value){
-        fetch('/register', {
+        fetch('/auth/register', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -114,7 +114,7 @@ registerForm.addEventListener('submit', e => {
 
 logoutBtn.addEventListener('click', e => {
     e.preventDefault();
-    fetch('/logout')
+    fetch('/auth/logout')
         .then(res => res.json())
         .then(data => {
             loginMsg.textContent = `Bye ${data.username}`;

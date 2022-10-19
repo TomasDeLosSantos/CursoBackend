@@ -13,40 +13,30 @@ const { normalize, denormalize, schema} = normalizr;
 const compression = require('compression');
 
 // MONGO MESSAGES
-const Mongo = require('./modules/MongoDB');
+const Mongo = require('./services/MongoDB');
 const mongo = new Mongo();
 
 // MONGO USERS
-const MongoUsers = require('./modules/MongoUsers');
+const MongoUsers = require('./services/MongoUsers');
 const mongoUsers = new MongoUsers();
-
+module.exports = mongoUsers;
 
 const session = require('express-session');
 const MongoStore = require('connect-mongo');
+const passport = require('passport');
+const bcrypt = require('bcryptjs');
+const LocalStrategy = require('passport-local').Strategy;
+const { createHash } = require('crypto');
 const httpServer = new HttpServer(app);
 const io = new Socket(httpServer);
-const dbManager = require('./modules/dbManager');
-const passport = require('passport');
-const LocalStrategy = require('passport-local').Strategy;
-const bcrypt = require('bcryptjs');
-const { createHash } = require('crypto');
+const dbManager = require('./services/dbManager');
 const { fork } = require('child_process');
+
+const { authRouter } = require('./routers/auth');
 
 
 require('dotenv').config();
 
-
-// const yargs = require('yargs')(process.argv.slice(2))
-// const args = yargs.default({ name: 'John', lastname: 'Doe' }).argv();
-
-
-const sqlite = new dbManager({
-    client: 'sqlite3',
-    connection: {
-        filename: './DB/messages.sqlite'
-    },
-    useNullAsDefault: true
-}, 'message');
 
 // GENERADOR DE PRODUCTOS CON FAKER.JS
 const mockProducts = () => {
@@ -87,51 +77,8 @@ const normalizeData = async (msg) => {
     await mongo.update(0, normalizedData);
 }
 
-const passwordCheck = (user, password) => {
-    return bcrypt.compareSync(password, user.password);
-}
 
-passport.use('login', new LocalStrategy(
-    async (username, password, done) => {
-        let user = await mongoUsers.getByUsername(username);
-        console.log(user[0]);
-        if(user[0]){
-            if(passwordCheck(user[0], password)){
-                console.log('dentro');
-                return done(null, user[0]);
-            } else{
-                console.log('Invalid Password');
-                return done(null, false);
-            }
-        } else{
-            console.log('User not found');
-            return done(null, false);
-        }
-    }
-));
 
-passport.use('signup', new LocalStrategy({
-    passReqToCallback: true
-}, async (req, username, password, done) => {
-        let user = await mongoUsers.getByUsername(username);
-        if(user[0]){
-            console.log('User Already Exists');
-            return done(null, false);
-        } else{
-            const newUser = {
-                username: username,
-                password: bcrypt.hashSync(password, bcrypt.genSaltSync(8), null),
-                email: req.body.email
-            }
-
-            try {
-                return done(null, await mongoUsers.save(newUser));
-            } catch (error) {
-                return done(error);
-            }
-        }
-    }
-));
 
 passport.serializeUser((user, done) => {
     done(null, user);
@@ -165,6 +112,7 @@ app.use(session({
 
 app.use(passport.initialize());
 app.use(passport.session());
+app.use('/auth', authRouter);
 
 // WEBSOCKETS
 io.on('connection', async socket => {
@@ -184,33 +132,10 @@ router.get('/products-test', (req, res) => {
 })
 
 /* DESAFÍO COOKIES Y SESSION */
-app.get('/logged', (req, res) => {
-    if(req.session.username) res.json({login: 1, username: req.session.username});
-    else res.json({login: 0});
-})
+// app.get('/auth', authRouter);
 
-app.post('/login', passport.authenticate('login') , (req, res) => {
-    console.log(req.body.username);
-    req.session.username = req.body.username;
-    res.json({login: 1, username: req.body.username});
-})
+// app.post('/auth', passport.authenticate('login') || passport.authenticate('signup'), authRouter);
 
-app.post('/register', passport.authenticate('signup') , (req, res) => {
-    console.log(req.body.username);
-    req.session.username = req.body.username;
-    res.json({login: 1, username: req.body.username});
-})
-
-app.get('/logout', (req, res) => {
-    let user = req.session.username;
-    req.session.destroy(err => {
-        if (err) {
-            res.json({ login: 0 })
-        } else {
-            res.json({login: 0, username: user})
-        }
-    })
-})
 
 /* DESAFÍO CLASE 28 */
 app.get('/info', (req, res) => {
