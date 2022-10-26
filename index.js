@@ -153,15 +153,3 @@ app.get('/info', (req, res) => {
 const server = httpServer.listen(process.env.PORT || PORT, () => {
     console.log(`Corriendo servidor en dirección ${PORT}`);
 })
-
-server.on('request', (req, res) => {
-    let { url } = req;
-    if(url == '/api/randoms'){
-        const generator = fork('random.js');
-        generator.send(req.query.quant || 1000000);
-        generator.on('message', msg => {
-            res.end(msg);
-        })
-    }
-})
-server.on("error", error => console.log(`Error en el servidor ${error}`));
