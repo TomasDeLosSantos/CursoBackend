@@ -1,11 +1,13 @@
 {
   "main": "index.js",
   "scripts": {
-    "start" : "node index.js"
+    "start": "node index.js",
+    "test": "mocha index.test.js"
   },
   "dependencies": {
     "@faker-js/faker": "^7.4.0",
     "bcryptjs": "^2.4.3",
+    "chai": "^4.3.6",
     "compression": "^1.7.4",
     "connect-mongo": "^4.6.0",
     "dotenv": "^16.0.2",
@@ -14,6 +16,7 @@
     "handlebars": "^4.7.7",
     "knex": "^2.2.0",
     "log4js": "^6.6.1",
+    "mocha": "^10.1.0",
     "mongoose": "^6.5.2",
     "mysql": "^2.18.1",
     "normalizr": "^3.6.2",
@@ -22,6 +25,7 @@
     "passport-session": "^1.0.2",
     "socket.io": "^4.5.1",
     "sqlite3": "^5.0.10",
+    "supertest": "^6.3.1",
     "yargs": "^17.5.1"
   }
 }

@@ -7,10 +7,6 @@ const UserModel = {
 
 class MongoProduct {
     constructor(){
-        // this.connection = mongoose.connect('mongodb+srv://tomas:tomasmongo1234@cluster0.zjndnkl.mongodb.net/?retryWrites=true&w=majority', {
-        //     useNewUrlParser: true,
-        //     useUnifiedTopology: true
-        // })
         this.model = new mongoose.Schema(UserModel);
         this.product = mongoose.model('users', this.model);
     }

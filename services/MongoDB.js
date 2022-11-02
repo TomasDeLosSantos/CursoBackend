@@ -7,7 +7,7 @@ const MessageModel = {
 
 class MongoProduct {
     constructor(){
-        this.connection = mongoose.connect('mongodb+srv://tomas:tomasmongo1234@cluster0.zjndnkl.mongodb.net/?retryWrites=true&w=majority', {
+        this.connection = mongoose.connect(process.env.MONGO_URL, {
             useNewUrlParser: true,
             useUnifiedTopology: true
         })

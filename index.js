@@ -24,14 +24,8 @@ module.exports = mongoUsers;
 const session = require('express-session');
 const MongoStore = require('connect-mongo');
 const passport = require('passport');
-const bcrypt = require('bcryptjs');
-const LocalStrategy = require('passport-local').Strategy;
-const { createHash } = require('crypto');
 const httpServer = new HttpServer(app);
 const io = new Socket(httpServer);
-const dbManager = require('./services/dbManager');
-const { fork } = require('child_process');
-
 const { authRouter } = require('./routers/auth');
 
 
@@ -77,9 +71,6 @@ const normalizeData = async (msg) => {
     await mongo.update(0, normalizedData);
 }
 
-
-
-
 passport.serializeUser((user, done) => {
     done(null, user);
 })
@@ -99,7 +90,6 @@ app.set('view engine', 'ejs');
 
 
 app.use(session({
-    // store: MongoStore.create({ mongoUrl: config.mongoLocal.cnxStr }),
     store: MongoStore.create({ mongoUrl: process.env.MONGO_URL }),
     secret: process.env.SECRET,
     resave: false,
@@ -131,13 +121,6 @@ router.get('/products-test', (req, res) => {
     res.json(mockProducts());
 })
 
-/* DESAFÍO COOKIES Y SESSION */
-// app.get('/auth', authRouter);
-
-// app.post('/auth', passport.authenticate('login') || passport.authenticate('signup'), authRouter);
-
-
-/* DESAFÍO CLASE 28 */
 app.get('/info', (req, res) => {
     res.json({
         ...args,
