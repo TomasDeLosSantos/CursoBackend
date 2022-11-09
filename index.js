@@ -27,10 +27,23 @@ const passport = require('passport');
 const httpServer = new HttpServer(app);
 const io = new Socket(httpServer);
 const { authRouter } = require('./routers/auth');
+const { buildSchema } = require('graphql');
+const { graphqlHTTP } = require('express-graphql');
+
 
 
 require('dotenv').config();
 
+const graphSchema = buildSchema(`
+    type Product {
+        title: String,
+        price: Int,
+        img: String
+    }
+    type Query {
+        getRandomProducts(): [Product]
+    }
+`)
 
 // GENERADOR DE PRODUCTOS CON FAKER.JS
 const mockProducts = () => {
@@ -45,6 +58,10 @@ const mockProducts = () => {
     }
 
     return array;
+}
+
+const getRandomProducts = () => {
+    return mockProducts();
 }
 
 // NOMALIZACIÓN DE DATOS
@@ -103,6 +120,14 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 app.use('/auth', authRouter);
+
+app.use('/graphql', graphqlHTTP({
+    schema: graphSchema,
+    rootValue: {
+        getRandomProducts
+    },
+    graphiql: false
+}));
 
 // WEBSOCKETS
 io.on('connection', async socket => {
