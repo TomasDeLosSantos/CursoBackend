@@ -1,7 +1,10 @@
-const express = require('express');
-const { Router } = express;
-const app = express();
-const router = Router();
+const Koa = require('koa');
+const KoaRouter = require('koa-router');
+const json = require('koa-json');
+
+const app = new Koa();
+const router = new KoaRouter();
+
 const PORT = 8000;
 const { Server: HttpServer} = require('http');
 const { Server: Socket} = require('socket.io');
@@ -27,23 +30,8 @@ const passport = require('passport');
 const httpServer = new HttpServer(app);
 const io = new Socket(httpServer);
 const { authRouter } = require('./routers/auth');
-const { buildSchema } = require('graphql');
-const { graphqlHTTP } = require('express-graphql');
-
-
 
 require('dotenv').config();
-
-const graphSchema = buildSchema(`
-    type Product {
-        title: String,
-        price: Int,
-        img: String
-    }
-    type Query {
-        getRandomProducts(): [Product]
-    }
-`)
 
 // GENERADOR DE PRODUCTOS CON FAKER.JS
 const mockProducts = () => {
@@ -60,9 +48,6 @@ const mockProducts = () => {
     return array;
 }
 
-const getRandomProducts = () => {
-    return mockProducts();
-}
 
 // NOMALIZACIÓN DE DATOS
 const normalizeData = async (msg) => {
@@ -97,13 +82,14 @@ passport.deserializeUser(async (username, done) => {
     done(null, user)
 })
 
-app.use(express.json());
-app.use(express.static('public'));
-app.use('/static', express.static(__dirname + '/public'));
-app.use(express.urlencoded({ extended: true }));
+app.use(json());
+// app.use(express.static('public'));
+// app.use('/static', express.static(__dirname + '/public'));
+app.use(require('koa-static')(__dirname + '/public'));
+// app.use(express.urlencoded({ extended: true }));
 app.use('/api', router);
 app.use(compression());
-app.set('view engine', 'ejs');
+// app.set('view engine', 'ejs');
 
 
 app.use(session({
@@ -119,15 +105,10 @@ app.use(session({
 
 app.use(passport.initialize());
 app.use(passport.session());
+
+
 app.use('/auth', authRouter);
 
-app.use('/graphql', graphqlHTTP({
-    schema: graphSchema,
-    rootValue: {
-        getRandomProducts
-    },
-    graphiql: false
-}));
 
 // WEBSOCKETS
 io.on('connection', async socket => {
@@ -142,12 +123,12 @@ io.on('connection', async socket => {
     })
 })
 
-router.get('/products-test', (req, res) => {
-    res.json(mockProducts());
+router.get('/products-test', async ctx => {
+    ctx.body(mockProducts());
 })
 
-app.get('/info', (req, res) => {
-    res.json({
+app.get('/info', async ctx => {
+    ctx.body({
         ...args,
         platform: process.platform,
         version: process.version,
@@ -156,6 +137,8 @@ app.get('/info', (req, res) => {
         folder: process.cwd()
     })
 })
+
+app.use(router.routes()).use(router.allowedMethods());
 
 
 const server = httpServer.listen(process.env.PORT || PORT, () => {

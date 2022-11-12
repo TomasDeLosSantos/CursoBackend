@@ -1,6 +1,8 @@
-const express = require('express');
+// const express = require('express');
+// const { Router } = express;
+const Router = require('koa-router');
+
 const passport = require('passport');
-const { Router } = express;
 const { getLogged, getLogout, postLogin, postRegister } = require("../controllers/auth");
 // const passport = require('passport');
 const bcrypt = require('bcryptjs');
